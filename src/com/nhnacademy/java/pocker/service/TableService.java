@@ -1,8 +1,5 @@
 package com.nhnacademy.java.pocker.service;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import com.nhnacademy.java.pocker.cardPack.*;
@@ -18,9 +15,13 @@ public class TableService {
      */
     public static void gameStart() {
         List<Card> cardPack = getCards();
+
+        System.out.print("몇명이서 게임 하시겠습니까? (2 ~ 6명) --> ");
         int N = getPlayers();
+
         User users[] = makeUser(cardPack, N);
         Banker banker[] = makeBanker(cardPack, N);
+
         displayGame(users, banker);
         resultGame(users, banker);
     }
@@ -32,7 +33,6 @@ public class TableService {
      */
     public static int getPlayers() {
         Scanner sc = new Scanner(System.in);
-        System.out.print("몇명이서 게임 하시겠습니까? (2 ~ 6명) --> ");
         int N = sc.nextInt();
         if (N > MAX_PLAYERS || N < MIN_PLAYERS) {
             throw new IllegalArgumentException("Invalid number of players. Please choose between "
@@ -154,24 +154,33 @@ public class TableService {
         List<Card> card = PockerRule.getCardsCombination(user, banker);
         System.out.printf("\n\n%6s 플레이어 : ", user.getName());
         if (card.size() == 2) {
-            System.out.println("원 페어 " + card.get(0));
+            System.out.print("원 페어 ");
+            printCombi(card);
         } else if (card.size() == 3) {
-            System.out.println("트리플 " + card.get(0) + " " + card.get(1) + " " + card.get(2));
+            System.out.print("트리플 ");
+            printCombi(card);
         } else if (card.size() == 4) {
             if (card.get(1).getCardNum().getValue() == card.get(3).getCardNum().getValue()) {
-                System.out.println("포 카드 " + card.get(0) + " " + card.get(1) + " " + card.get(2)
-                        + " " + card.get(3));
+                System.out.print("포 카드 ");
+                printCombi(card);
             } else {
-                System.out.println("투 페어 " + card.get(0) + " " + card.get(1) + " | " + card.get(2)
-                        + " " + card.get(3));
+                System.out.print("투 페어 ");
+                printCombi(card);
             }
         } else if (card.size() == 5) {
-            System.out.println("풀 하우스 " + card.get(0) + " " + card.get(1) + " | " + card.get(2)
-                    + " " + card.get(3) + " " + card.get(4));
+            System.out.println("풀 하우스 ");
+            printCombi(card);
         } else {
             System.out.print("논 페어 ");
             printNonePair(PockerRule.fiveCards(user, banker));
         }
+    }
+
+    public static void printCombi(List<Card> card) {
+        for (Card c : card) {
+            System.out.print(c + " ");
+        }
+        System.out.println();
     }
 
     /**

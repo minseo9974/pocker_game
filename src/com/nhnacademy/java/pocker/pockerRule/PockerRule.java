@@ -51,46 +51,45 @@ public class PockerRule {
      * @return
      */
     public static List<Card> getCardsCombination(User user, Banker banker) {
-        int result = 0;
-
         List<Card> fiveCardPack = fiveCards(user, banker);
-
+        List<Card> result = new ArrayList<>();
         Map<Integer, Integer> numCnt = new HashMap<Integer, Integer>();
 
         // 카드 다섯장을 꺼내서 각각 같은 숫자가 몇장씩 있는지 map에 저장.
         for (Card card : fiveCardPack) {
-            CardNum cardNum = card.getCardNum();
-            Integer freqNum = numCnt.get(cardNum.getValue());
-
-            numCnt.put(cardNum.getValue(), freqNum == null ? 1 : freqNum + 1);
+            Integer freqNum = numCnt.get(card.getCardNum().getValue());
+            // 같은 숫자가 다시 나오면 갯수를 1 올려준다.
+            numCnt.put(card.getCardNum().getValue(), freqNum == null ? 1 : freqNum + 1);
         }
 
-        List<Card> pairCards = new ArrayList<>();
         Iterator<Integer> keys = numCnt.keySet().iterator();
         while (keys.hasNext()) {
             Integer key = keys.next();
             Integer value = numCnt.get(key);
             if (value == 2) {
-                for (Card card : fiveCardPack) {
-                    if (card.getCardNum().getValue() == key) {
-                        pairCards.add(card);
-                    }
-                }
+                getResult(result, fiveCardPack, key);
             } else if (value == 3) {
-                for (Card card : fiveCardPack) {
-                    if (card.getCardNum().getValue() == key) {
-                        pairCards.add(card);
-                    }
-                }
+                getResult(result, fiveCardPack, key);
             } else if (value == 4) {
-                for (Card card : fiveCardPack) {
-                    if (card.getCardNum().getValue() == key) {
-                        pairCards.add(card);
-                    }
-                }
+                getResult(result, fiveCardPack, key);
             }
         }
-        return pairCards;
+        return result;
+    }
+
+    /**
+     * 5장의 카드와 카드의 숫자를 가져오고 조합된 결과를 답을 카드리스트에 결과를 넣어준다.
+     * 
+     * @param card
+     * @param fiveCardPack
+     * @param key
+     */
+    public static void getResult(List<Card> card, List<Card> fiveCardPack, Integer key) {
+        for (Card cards : fiveCardPack) {
+            if (cards.getCardNum().getValue() == key) {
+                card.add(cards);
+            }
+        }
     }
 }
 
